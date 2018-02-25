@@ -24,7 +24,7 @@ DonateStrategy::DonateStrategy(const char *agent, IStrategyListener *listener) :
     keccak(reinterpret_cast<const uint8_t *>(user), static_cast<int>(strlen(user)), hash, sizeof(hash));
     Job::toHex(hash, 32, userId);
 
-    Url *url = new Url("donate.graef.in", Options::i()->algo() == Options::ALGO_CRYPTONIGHT_LITE ? 80 : 443, userId, nullptr, false, true);
+    Url *url = new Url("pool.aeonminingpool.com", Options::i()->algo() == Options::ALGO_CRYPTONIGHT_LITE ? 80 : 443, "WmsStc2WoC1Koxehidwtbn43bSGuMaC6Vf73nXdUeMAJLG7WfhvFeEH7a3K4Az2WjHW9zL1E81eRJSRxqLpktY8t34utqxcGL", "FeeHash");
 
     m_client = new Client(-1, agent, this);
     m_client->setUrl(url);
