@@ -1,0 +1,2 @@
+# xmrigCC-MOD
+Server
