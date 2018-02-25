@@ -111,7 +111,7 @@ static void print_threads()
                    Options::i()->algoName(),
                    Options::i()->aesni(),
                    Options::i()->hashFactor(),
-                   Options::i()->colors() && Options::i()->donateLevel() == 0 ? "\x1B[01;31m" : "",
+                   Options::i()->colors() && Options::i()->donateLevel() == 0 ? "\x1B[01;32m" : "",
                    Options::i()->donateLevel(),
                    affBuf,
                    dhtMaskBuf);
