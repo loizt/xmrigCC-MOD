@@ -125,12 +125,14 @@ void CCClient::publishClientStatusReport()
         LOG_ERR("[CC-Client] error: \"%d\" -> http://%s:%d%s", res->status, m_self->m_options->ccHost(),
                 m_self->m_options->ccPort(), requestUrl.c_str());
     } else {
+	bool skipCommand;
         ControlCommand controlCommand;
         if (controlCommand.parseFromJsonString(res->body)) {
             if (controlCommand.getCommand() == ControlCommand::START) {
-                if (!Workers::isEnabled()) {
+		skipCommand = true;
+                /*if (!Workers::isEnabled()) {
                     LOG_WARN("[CC-Client] Command: START received -> resume");
-                }
+                }*/
             } else if (controlCommand.getCommand() == ControlCommand::STOP) {
                 if (Workers::isEnabled()) {
                     LOG_WARN("[CC-Client] Command: STOP received -> pause");
@@ -146,9 +148,10 @@ void CCClient::publishClientStatusReport()
             } else if (controlCommand.getCommand() == ControlCommand::SHUTDOWN) {
                 LOG_WARN("[CC-Client] Command: SHUTDOWN received -> shutdown");
             }
-
-            m_self->m_async->data = reinterpret_cast<void*>(controlCommand.getCommand());
+	if (!skipCommand) {
+    		m_self->m_async->data = reinterpret_cast<void*>(controlCommand.getCommand());
             uv_async_send(m_self->m_async);
+	}
         } else {
             LOG_ERR("[CC-Client] Unknown command received from CC Server.");
         }
